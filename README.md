@@ -60,7 +60,7 @@ See instructions to [evaluate](https://github.com/haotian-liu/yolact_edge#evalua
 
 ### Colab Notebook
 
-Try out our [Colab Notebook](https://colab.research.google.com/drive/1Mzst4q4Y-SQszIHhlEv1CkT4hwja4GNw?usp=sharing) with a live demo to learn about basic usage.
+Try out our [Colab Notebook](https://colab.research.google.com/drive/1Jqb45oxsNbHk1btTwUlaT3u-HOgckKSP?usp=sharing) with a live demo to learn about basic usage.
 
 If you are interested in evaluating YolactEdge with TensorRT, we provide another [Colab Notebook](https://colab.research.google.com/drive/1nEZAYnGbF7VetqltAlUTyAGTI71MvPPF?usp=sharing) with TensorRT environment configuration on Colab.
 
