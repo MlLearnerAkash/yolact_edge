@@ -138,14 +138,14 @@ dataset_base = Config({
     'name': 'Base Dataset',
 
     # Training images and annotations
-    'train_images': './data/coco/images/',
+    'train_images': "/home/eto/yolact_edge/data/tray/images/", #'./data/coco/images/',<---------
     'train_info':   'path_to_annotation_file',
 
     # Calibration image folder for TensorRT INT8 conversion.
     'calib_images': './data/coco/calib_images/',
     
     # Validation images and annotations.
-    'valid_images': './data/coco/images/',
+    'valid_images': "/home/eto/yolact_edge/data/tray/images/" ,#'./data/coco/images/',<----------
     'valid_info':   'path_to_annotation_file',
 
     # Whether or not to load GT. If this is False, eval.py quantitative evaluation won't work.
@@ -155,7 +155,7 @@ dataset_base = Config({
     'is_video': False,
 
     # A list of names for each of you classes.
-    'class_names': COCO_CLASSES,
+    'class_names': ("tray"),#COCO_CLASSES, <-----
 
     # COCO class ids aren't sequential, so this is a bandage fix. If your ids aren't sequential,
     # provide a map from category_id -> index in class_names + 1 (the +1 is there because it's 1-indexed).
@@ -231,7 +231,17 @@ youtube_vis_dataset = dataset_base.copy({
 })
 
 
+#-----------------------Custom dataset---------------------------#
+tray_dataset=dataset_base.copy({
+    'name': 'tray_images',
+    
+    'train_info': '/home/eto/yolact_edge/data/tray/annotation/tray_train_annotations.json',
+    'valid_info': '/home/eto/yolact_edge/data/tray/annotation/tray_val_annotations.json',
 
+    'label_map': {1:1} #COCO_LABEL_MAP
+})
+
+#-----------------------------------------------------------------#
 
 
 
@@ -517,9 +527,9 @@ flow_base = Config({
 # ----------------------- CONFIG DEFAULTS ----------------------- #
 
 coco_base_config = Config({
-    'dataset': coco2014_dataset,
+    'dataset': tray_dataset,#coco2014_dataset, #<---------------------------
     'joint_dataset': None,
-    'num_classes': 81, # This should include the background class
+    'num_classes': 2,#81, # This should include the background class #<--------------
 
     'max_iter': 400000,
 
@@ -725,8 +735,8 @@ yolact_base_config = coco_base_config.copy({
     'name': 'yolact_base',
 
     # Dataset stuff
-    'dataset': coco2017_dataset,
-    'num_classes': len(coco2017_dataset.class_names) + 1,
+    'dataset': tray_dataset,#coco2017_dataset, #<-----------------------------
+    'num_classes': 2,#len(coco2017_dataset.class_names) + 1, #<-------------------
 
     # Image Size
     'max_size': 550,
@@ -798,6 +808,20 @@ yolact_edge_config = yolact_base_config.copy({
     'torch2trt_prediction_module': True,
     'use_fast_nms': False
 })
+
+#-----------------custom config file---------------------#
+
+yolact_tray_config=yolact_base_config.copy({
+    'name': 'yolact_edge',
+    'torch2trt_max_calibration_images': 100,
+    'torch2trt_backbone_int8': False,#True,
+    'torch2trt_protonet_int8': False,#True,
+    'torch2trt_fpn': False,#True,
+    'torch2trt_prediction_module': False,#True,
+    'use_fast_nms': True
+})
+
+#---------------------------------------------------------#
 
 yolact_edge_mobilenetv2_config = yolact_edge_config.copy({
     'name': 'yolact_edge_mobilenetv2',
@@ -939,6 +963,9 @@ yolact_edge_youtubevis_resnet50_config = yolact_edge_youtubevis_config.copy({
     'name': 'yolact_edge_youtubevis_resnet50',
     'backbone': yolact_resnet50_config.backbone
 })
+
+
+#
 
 # Default config
 cfg = yolact_edge_config.copy()

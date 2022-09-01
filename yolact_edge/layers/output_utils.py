@@ -118,7 +118,6 @@ def postprocess(det_output, w, h, batch_idx=0, interpolation_mode='bilinear',
 
         for jdx in range(masks.size(0)):
             x1, y1, x2, y2 = boxes[jdx, :]
-
             mask_w = x2 - x1
             mask_h = y2 - y1
 
@@ -132,7 +131,6 @@ def postprocess(det_output, w, h, batch_idx=0, interpolation_mode='bilinear',
             full_masks[jdx, y1:y2, x1:x2] = mask
         
         masks = full_masks
-
     return classes, scores, boxes, masks
 
 

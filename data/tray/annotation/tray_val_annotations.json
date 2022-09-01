@@ -1,0 +1,117 @@
+{
+    "info": {
+        "year": "2022",
+        "version": "1",
+        "description": "Exported from roboflow.ai",
+        "contributor": "",
+        "url": "https://public.roboflow.ai/object-detection/undefined",
+        "date_created": "2022-08-29T09:00:17+00:00"
+    },
+    "licenses": [
+        {
+            "id": 1,
+            "url": "https://creativecommons.org/licenses/by/4.0/",
+            "name": "CC BY 4.0"
+        }
+    ],
+    "categories": [
+        {
+            "id": 0,
+            "name": "box",
+            "supercategory": "none"
+        },
+        {
+            "id": 1,
+            "name": "box",
+            "supercategory": "box"
+        }
+    ],
+    "images": [
+        {
+            "id": 0,
+            "license": 1,
+            "file_name": "65_png.rf.ae129048da0197a2f7a0083eb5cf28a9.jpg",
+            "height": 720,
+            "width": 1280,
+            "date_captured": "2022-08-29T09:00:17+00:00"
+        },
+        {
+            "id": 1,
+            "license": 1,
+            "file_name": "62_png.rf.857df7b8af73748a87f2c3cb574bb83e.jpg",
+            "height": 720,
+            "width": 1280,
+            "date_captured": "2022-08-29T09:00:17+00:00"
+        }
+    ],
+    "annotations": [
+        {
+            "id": 0,
+            "image_id": 0,
+            "category_id": 1,
+            "bbox": [
+                438,
+                81,
+                501.54891000000003,
+                570.5306820000001
+            ],
+            "area": 286149.04167865665,
+            "segmentation": [
+                [
+                    939.630213,
+                    640.272972,
+                    902.83705,
+                    341.930952,
+                    875.726298,
+                    81.366006,
+                    685.951035,
+                    81.366006,
+                    469.210626,
+                    89.115149,
+                    438.081303,
+                    651.896688,
+                    653.999077,
+                    646.08483,
+                    939.630213,
+                    640.272972
+                ]
+            ],
+            "iscrowd": 0
+        },
+        {
+            "id": 1,
+            "image_id": 1,
+            "category_id": 1,
+            "bbox": [
+                440,
+                80,
+                497.67594599999995,
+                569.5620389999999
+            ],
+            "area": 283457.32656501385,
+            "segmentation": [
+                [
+                    726.617163,
+                    646.08483,
+                    937.693731,
+                    641.241615,
+                    909.614738,
+                    377.77074,
+                    874.758057,
+                    81.366006,
+                    717.902992,
+                    80.397363,
+                    467.27334,
+                    86.20922,
+                    454.541403,
+                    362.272453,
+                    440.017785,
+                    649.959402,
+                    726.617163,
+                    646.08483
+                ]
+            ],
+            "iscrowd": 0
+        }
+    ]
+}

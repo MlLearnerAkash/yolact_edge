@@ -32,7 +32,14 @@ import cv2
 import logging
 
 import math
+import sys
 
+from pycocotools import mask
+from skimage import measure
+
+np.set_printoptions(threshold=sys.maxsize)
+
+# np.set_printoptions(precision=3)
 
 def str2bool(v):
     if v.lower() in ('yes', 'true', 't', 'y', '1'):
@@ -207,13 +214,14 @@ def prep_display(dets_out, img, h, w, undo_transform=True, class_color=False, ma
     # Beware: very fast but possibly unintelligible mask-drawing code ahead
     # I wish I had access to OpenGL or Vulkan but alas, I guess Pytorch tensor operations will have to suffice
     if args.display_masks and cfg.eval_mask_branch:
+        
         # After this, mask is of size [num_dets, h, w, 1]
         masks = masks[:num_dets_to_consider, :, :, None]
-        
+
         # Prepare the RGB images for each mask given their color (size [num_dets, h, w, 1])
         colors = torch.cat([get_color(j, on_gpu=img_gpu.device.index).view(1, 1, 1, 3) for j in range(num_dets_to_consider)], dim=0)
         masks_color = masks.repeat(1, 1, 1, 3) * colors * mask_alpha
-
+        
         # This is 1 everywhere except for 1-mask_alpha where the mask is
         inv_alph_masks = masks * (-mask_alpha) + 1
         
@@ -225,13 +233,15 @@ def prep_display(dets_out, img, h, w, undo_transform=True, class_color=False, ma
             inv_alph_cumul = inv_alph_masks[:(num_dets_to_consider-1)].cumprod(dim=0)
             masks_color_cumul = masks_color[1:] * inv_alph_cumul
             masks_color_summand += masks_color_cumul.sum(dim=0)
-
+        # print(">>>>>>>>>>>>>>>>",inv_alph_masks.prod(dim=0)*255)
+        mask_=inv_alph_masks.prod(dim=0)*255 #MASK HERE!!!
+        #mask__=mask_.cpu().numpy()
+        #cv2.imwrite("mask.png",mask__)
         img_gpu = img_gpu * inv_alph_masks.prod(dim=0) + masks_color_summand
-        
     # Then draw the stuff that needs to be done on the cpu
     # Note, make sure this is a uint8 tensor or opencv will not anti alias text for whatever reason
     img_numpy = (img_gpu * 255).byte().cpu().numpy()
-    
+
     if args.display_text or args.display_bboxes:
         for j in reversed(range(num_dets_to_consider)):
             x1, y1, x2, y2 = boxes[j, :]
@@ -311,12 +321,17 @@ class Detections:
         """ The segmentation should be the full mask, the size of the image and with size [h, w]. """
         rle = pycocotools.mask.encode(np.asfortranarray(segmentation.astype(np.uint8)))
         rle['counts'] = rle['counts'].decode('ascii') # json.dump doesn't like bytes strings
+        # rle2=np.asfortranarray(segmentation.astype(np.uint8))
+        # compressed_rle = mask.frPyObjects(rle2, rle2.get('size')[0], rle2.get('size')[1])
+        # decoded_mask=mask.decode(compressed_rle)
+        # print(">>>>>>",decoded_mask)
 
         self.mask_data.append({
             'image_id': int(image_id),
             'category_id': get_coco_cat(int(category_id)),
             'segmentation': rle,
-            'score': float(score)
+            'score': float(score),
+            #"decoded_mask":float(decoded_mask),
         })
 
     def dump(self):
@@ -595,9 +610,8 @@ def evalimage(net:Yolact, path:str, save_path:str=None, detections:Detections=No
 
 
     preds = net(batch, extras=extras)["pred_outs"]
-
+    # print("<<<<<<<<<<<<<predictios are: ",preds,"\n\n") #FIXME:TODO<----------
     img_numpy = prep_display(preds, frame, None, None, undo_transform=False)
-
     if args.output_coco_json:
         with timer.env('Postprocess'):
             _, _, h, w = batch.size()
@@ -607,6 +621,7 @@ def evalimage(net:Yolact, path:str, save_path:str=None, detections:Detections=No
         with timer.env('JSON Output'):
             boxes = boxes.cpu().numpy()
             masks = masks.view(-1, h, w).cpu().numpy()
+            # print("The predicted mask is:", masks.shape)
             for i in range(masks.shape[0]):
                 # Make sure that the bounding box actually makes sense and a mask was produced
                 if (boxes[i, 3] - boxes[i, 1]) * (boxes[i, 2] - boxes[i, 0]) > 0:
