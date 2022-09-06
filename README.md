@@ -253,4 +253,7 @@ For questions about our paper or code, please contact [Haotian Liu](mailto:lhtli
 
 ----------------------CUSTOM-------------------
 
-For retieving mask:open line:273-239
+```
+$ python infer_yact.py --config=yolact_tray_config -trained_model=weights/yolact_edge_54_800000.pth --score_threshold=0.3 --top_k=100 
+
+```
